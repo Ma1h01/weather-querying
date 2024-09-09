@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import Searchbar from "@/components/Searchbar";
 import { useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
@@ -8,6 +8,8 @@ import {
   getWeatherAtUSLocation,
   getWeatherAtOtherLocation,
 } from "@/services/OpenWeatherMap";
+import FastImage from "react-native-fast-image";
+
 export default function Index() {
   const [searchResult, setSearchResult] = useState<
     { city: string; temperature: number; weather: string }[]
@@ -70,14 +72,18 @@ export default function Index() {
   };
 
   return (
-    <PaperProvider>
-      <GestureHandlerRootView
+    <GestureHandlerRootView>
+      <Image
+        source={{ uri: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDNyN2t6bTNjMjFrOTA4MmJocDNycDR2Zjd2MGN0M2sxam4yZXlvYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHbrvPFQw7x3BFioxA/giphy.webp" }}
         style={{
-          flex: 2 / 3,
-          justifyContent: "center",
-          alignItems: "center",
+          position: "absolute",
+          width: "100%",
+          height: "100%",
         }}
-      >
+        resizeMode="cover"
+      />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Searchbar handleSearch={handleSearch} />
         <Searchbar handleSearch={handleSearch} />
         {searchResult.map((item) => (
           <View key={item.city} style={{ marginTop: 5 }}>
@@ -86,7 +92,7 @@ export default function Index() {
             <Text>{`Weather: ${item.weather}`}</Text>
           </View>
         ))}
-      </GestureHandlerRootView>
-    </PaperProvider>
+      </View>
+    </GestureHandlerRootView>
   );
 }
