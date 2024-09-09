@@ -13,23 +13,6 @@ export default function Index() {
   const [searchResult, setSearchResult] = useState<
     { city: string; temperature: number; weather: string }[]
   >([]);
-  const weather = [
-    {
-      city: "Atlanta",
-      temperature: 25,
-      weather: "Sunny",
-    },
-    {
-      city: "London",
-      temperature: 15,
-      weather: "Rainy",
-    },
-    {
-      city: "Atlanta",
-      temperature: 30,
-      weather: "Cloudy",
-    },
-  ];
 
   const handleSearch = async (searchWords: any) => {
     try {

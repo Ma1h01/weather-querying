@@ -56,3 +56,10 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+
+
+android/
+index.js
+ios/
+metro.config.js
