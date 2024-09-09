@@ -3,11 +3,17 @@ import Searchbar from "@/components/Searchbar";
 import { useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { PaperProvider } from "react-native-paper";
+import {
+  getWeatherAtUSLocation,
+  getWeatherAtOtherLocation,
+} from "@/services/OpenWeatherMap";
 import FastImage from "react-native-fast-image";
 
-
 export default function Index() {
-  const [searchResult, setSearchResult] = useState<{ city: string; temperature: number; weather: string; }[]>([]);
+  const [searchResult, setSearchResult] = useState<
+    { city: string; temperature: number; weather: string }[]
+  >([]);
   const weather = [
     {
       city: "Atlanta",
@@ -26,10 +32,44 @@ export default function Index() {
     },
   ];
 
-  const handleSearch = (city: string) => {
-    const result: any = weather.filter((item) => item.city.toLowerCase() === city.toLowerCase());
-    setSearchResult(result);
-  }
+  const handleSearch = async (searchWords: any) => {
+    try {
+      if (searchWords.length == 2) {
+        const [city, country] = searchWords;
+        let res = await getWeatherAtOtherLocation(city, country);
+        console.log(res.name, res.main.temp, res.weather[0].description);
+        setSearchResult([{ city: res.name, temperature: res.main.temp, weather: res.weather[0].description }]);
+      } else if (searchWords.length == 3) {
+        const [city, state, country] = searchWords;
+        let res = await getWeatherAtUSLocation(city, state, country);
+        console.log(res.name, res.main.temp, res.weather[0].description);
+        setSearchResult([
+          {
+            city: res.name,
+            temperature: res.main.temp,
+            weather: res.weather[0].description,
+          },
+        ]);
+      } else {
+        setSearchResult([
+          {
+            city: "Invalid Search Query",
+            temperature: -1,
+            weather: "Invalid Search Query",
+          },
+        ]);
+      }
+    } catch (error: any) {
+      console.log(error);
+      setSearchResult([
+        {
+          city: error.message,
+          temperature: error.message,
+          weather: error.message,
+        },
+      ]);
+    }
+  };
 
   return (
     <GestureHandlerRootView>
@@ -44,11 +84,12 @@ export default function Index() {
       />
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Searchbar handleSearch={handleSearch} />
+        <Searchbar handleSearch={handleSearch} />
         {searchResult.map((item) => (
-          <View key={item.city} style={{marginTop: 5 }}>
-            <Text style={{ color: 'white' }}>{`City: ${item.city}`}</Text>
-            <Text style={{ color: 'white' }}>{`Temperature: ${item.temperature}`}</Text>
-            <Text style={{ color: 'white' }}>{`Weather: ${item.weather}`}</Text>
+          <View key={item.city} style={{ marginTop: 5 }}>
+            <Text>{`City: ${item.city}`}</Text>
+            <Text>{`Temperature: ${item.temperature}`}</Text>
+            <Text>{`Weather: ${item.weather}`}</Text>
           </View>
         ))}
       </View>
