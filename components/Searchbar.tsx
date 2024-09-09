@@ -16,8 +16,8 @@ const Searchbar = ({ handleSearch }: { handleSearch: any}) => {
     }
   };
 
-  const handleSumit = () => {
-    handleSearch(searchText);
+  const handleSumit = () => {     
+    handleSearch(searchText.split(","));
     setHelperTextVisible(false);
   }
   return (
