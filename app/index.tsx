@@ -8,7 +8,6 @@ import {
   getWeatherAtUSLocation,
   getWeatherAtOtherLocation,
 } from "@/services/OpenWeatherMap";
-import FastImage from "react-native-fast-image";
 
 export default function Index() {
   const [searchResult, setSearchResult] = useState<
@@ -83,7 +82,6 @@ export default function Index() {
         resizeMode="cover"
       />
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Searchbar handleSearch={handleSearch} />
         <Searchbar handleSearch={handleSearch} />
         {searchResult.map((item) => (
           <View key={item.city} style={{ marginTop: 5 }}>
