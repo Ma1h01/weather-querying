@@ -27,7 +27,7 @@ export default function Index() {
   ];
 
   const handleSearch = (city: string) => {
-    const result: any = weather.filter((item) => item.city === city);
+    const result: any = weather.filter((item) => item.city.toLowerCase() === city.toLowerCase());
     setSearchResult(result);
   }
 
