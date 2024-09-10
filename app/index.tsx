@@ -1,130 +1,79 @@
-import { StyleSheet, Image, Text, View } from "react-native";
-import Searchbar from "@/components/Searchbar";
-// import Auth from "@/components/Auth";
-import { useState, useEffect} from "react";
-import { FlatList } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { PaperProvider } from "react-native-paper";
-// import { supabase } from '../lib/supabase'
-// import Account from './components/Account'
-//import { Session } from '@supabase/supabase-js'
-import {
-  getWeatherAtUSLocation,
-  getWeatherAtOtherLocation,
-} from "@/services/OpenWeatherMap";
-import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
+// app/index.tsx
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function Index() {
-  // const [session, setSession] = useState<Session | null>(null)
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // useEffect(() => {
-  //   supabase.auth.getSession().then(({ data: { session } }) => {
-  //     setSession(session)
-  //   })
+  const router = useRouter();
 
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     setSession(session)
-  //   })
-  // }, [])
+  const admins = [
+    { username: 'admin1', password: '123456' },
+    { username: 'admin2', password: '123456' },
+  ];
 
+  const handleLogin = () => {
+    const admin = admins.find(
+      (admin) => admin.username === username && admin.password === password
+    );
 
-  const [searchResult, setSearchResult] = useState<
-    { city: string; temperature: number; weather: string }[]
-  >([]);
-
-  const handleSearch = async (searchWords: any) => {
-    try {
-      if (searchWords.length == 2) {
-        const [city, country] = searchWords;
-        let res = await getWeatherAtOtherLocation(city, country);
-        console.log(res.name, res.main.temp, res.weather[0].description);
-        setSearchResult([{ city: res.name, temperature: res.main.temp, weather: res.weather[0].description }]);
-      } else if (searchWords.length == 3) {
-        const [city, state, country] = searchWords;
-        let res = await getWeatherAtUSLocation(city, state, country);
-        console.log(res.name, res.main.temp, res.weather[0].description);
-        setSearchResult([
-          {
-            city: res.name,
-            temperature: res.main.temp,
-            weather: res.weather[0].description,
-          },
-        ]);
-      } else {
-        setSearchResult([
-          {
-            city: "Invalid Search Query",
-            temperature: -1,
-            weather: "Invalid Search Query",
-          },
-        ]);
-      }
-    } catch (error: any) {
-      console.log(error);
-      setSearchResult([
-        {
-          city: error.message,
-          temperature: error.message,
-          weather: error.message,
-        },
-      ]);
+    if (admin) {
+      router.push('/WeatherPage');  // Navigate to WeatherPage
+    } else {
+      setErrorMessage('Invalid username or password');
     }
   };
 
   return (
-    <GestureHandlerRootView>
-      {/* <View>
-        {session && session.user ? <Account key={session.user.id} session={session} /> : <Auth />}
-      </View> */}
-      <Image
-        source={{ uri: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDNyN2t6bTNjMjFrOTA4MmJocDNycDR2Zjd2MGN0M2sxam4yZXlvYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHbrvPFQw7x3BFioxA/giphy.webp" }}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-        }}
-        resizeMode="cover"
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        autoCapitalize="none"
+        keyboardType="default"
       />
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Searchbar handleSearch={handleSearch} />
-        {searchResult.map((item) => (
-          <View key={item.city} style={styles.container}>
-            <Text style={styles.city}>{`City: ${item.city}`}</Text>
-            <Text style={styles.temperature}>{`Temperature: ${item.temperature}`}</Text>
-            <Text style={styles.weather}>{`Weather: ${item.weather}`}</Text>
-          </View>
-        ))}
-      </View>
-    </GestureHandlerRootView>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <Button title="Login" onPress={handleLogin} />
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: '#f5f5f5',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
+    flex: 1,
     justifyContent: 'center',
-
+    padding: 20,
+    backgroundColor: '#f9f9f9',
   },
-  city: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  temperature: {
-    fontSize: 16,
-    color: '#666',
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
   },
-  weather: {
-    fontSize: 16,
-    color: '#666',
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
-
