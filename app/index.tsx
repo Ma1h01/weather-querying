@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { StyleSheet, Image, Text, View } from "react-native";
 import Searchbar from "@/components/Searchbar";
 // import Auth from "@/components/Auth";
 import { useState, useEffect} from "react";
@@ -12,6 +12,7 @@ import {
   getWeatherAtUSLocation,
   getWeatherAtOtherLocation,
 } from "@/services/OpenWeatherMap";
+import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 export default function Index() {
   // const [session, setSession] = useState<Session | null>(null)
@@ -87,13 +88,43 @@ export default function Index() {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Searchbar handleSearch={handleSearch} />
         {searchResult.map((item) => (
-          <View key={item.city} style={{ marginTop: 5 }}>
-            <Text>{`City: ${item.city}`}</Text>
-            <Text>{`Temperature: ${item.temperature}`}</Text>
-            <Text>{`Weather: ${item.weather}`}</Text>
+          <View key={item.city} style={styles.container}>
+            <Text style={styles.city}>{`City: ${item.city}`}</Text>
+            <Text style={styles.temperature}>{`Temperature: ${item.temperature}`}</Text>
+            <Text style={styles.weather}>{`Weather: ${item.weather}`}</Text>
           </View>
         ))}
       </View>
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#f5f5f5',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+    justifyContent: 'center',
+
+  },
+  city: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  temperature: {
+    fontSize: 16,
+    color: '#666',
+  },
+  weather: {
+    fontSize: 16,
+    color: '#666',
+  },
+});
+
