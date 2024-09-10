@@ -1,15 +1,32 @@
 import { Image, Text, View } from "react-native";
 import Searchbar from "@/components/Searchbar";
-import { useState } from "react";
+// import Auth from "@/components/Auth";
+import { useState, useEffect} from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
+// import { supabase } from '../lib/supabase'
+// import Account from './components/Account'
+//import { Session } from '@supabase/supabase-js'
 import {
   getWeatherAtUSLocation,
   getWeatherAtOtherLocation,
 } from "@/services/OpenWeatherMap";
 
 export default function Index() {
+  // const [session, setSession] = useState<Session | null>(null)
+
+  // useEffect(() => {
+  //   supabase.auth.getSession().then(({ data: { session } }) => {
+  //     setSession(session)
+  //   })
+
+  //   supabase.auth.onAuthStateChange((_event, session) => {
+  //     setSession(session)
+  //   })
+  // }, [])
+
+
   const [searchResult, setSearchResult] = useState<
     { city: string; temperature: number; weather: string }[]
   >([]);
@@ -55,6 +72,9 @@ export default function Index() {
 
   return (
     <GestureHandlerRootView>
+      {/* <View>
+        {session && session.user ? <Account key={session.user.id} session={session} /> : <Auth />}
+      </View> */}
       <Image
         source={{ uri: "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDNyN2t6bTNjMjFrOTA4MmJocDNycDR2Zjd2MGN0M2sxam4yZXlvYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tHbrvPFQw7x3BFioxA/giphy.webp" }}
         style={{
